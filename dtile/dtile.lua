@@ -136,6 +136,9 @@ function dtile.init(animation_groups, tilemap_url, tilemap_layers)
 	dtile.tilemap_url = tilemap_url
 	dtile.tilemap_layers = tilemap_layers
 	local x, y, w, h = tilemap.get_bounds(tilemap_url)
+	-- Some tilemaps wrongly returns 1, 0 as bounds.
+	x = 1
+	y = 1
 	dtile.tilemap_start_x = x
 	dtile.tilemap_start_y = y
 	dtile.tilemap_end_x = x + w - 1
