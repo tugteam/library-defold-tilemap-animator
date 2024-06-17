@@ -13,9 +13,9 @@ input_method = HiddenInputField
 
 [project]
 title = Defold Tilemap Animator
-version = 0.3.1
-publisher = Klayton Kowalski
-developer = Klayton Kowalski
+version = 1.0.0
+publisher = White Box Dev
+developer = White Box Dev
 
 [graphics]
 default_texture_min_filter = nearest

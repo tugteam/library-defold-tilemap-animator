@@ -1,19 +1,18 @@
 # Defold Tilemap Animator
+
 Defold Tilemap Animator provides runtime tile animations in a Defold game engine project.
 
-An [example project](https://github.com/klaytonkowalski/library-defold-tilemap-animator/tree/master/example) is available if you need additional help with configuration.  
-Visit my [Giphy](https://media.giphy.com/media/y0trFB9u4tttk3Wu9q/giphy.gif) to see an animated gif of the example project.
+Please click the ☆ button on GitHub if this repository is useful or interesting. Thank you!
 
-Please click the "Star" button on GitHub if you find this asset to be useful!
-
-![alt text](https://github.com/klaytonkowalski/library-defold-tilemap-animator/blob/master/assets/thumbnail.png?raw=true)
+![alt text](https://github.com/whiteboxdev/library-defold-tilemap-animator/blob/master/assets/thumbnail.png?raw=true)
 
 ## Installation
-To install dtile into your project, add one of the following links to your `game.project` dependencies:
-  - https://github.com/klaytonkowalski/library-defold-tilemap-animator/archive/master.zip
-  - URL of a [specific release](https://github.com/klaytonkowalski/library-defold-tilemap-animator/releases)
+
+Add the latest version to your project's dependencies:  
+https://github.com/whiteboxdev/library-defold-tilemap-animator/archive/master.zip
 
 ## Configuration
+
 Import the dtile Lua module into any script:
 `local dtile = require "dtile.dtile"`
 
@@ -55,7 +54,7 @@ If you wish to receive animation progress updates in your `on_message()` functio
 
 dtile will now begin animating your tilemap. Of course, only loop tiles will show any activity. To animate a trigger tile, call `dtile.animate()`.
 
-If you would like to cancel all animations--both loops and triggers--call `dtile.cleanup()`. To start animating again, call `dtile.init()`.
+If you would like to cancel all animations--both loops and triggers--call `dtile.final()`. To start animating again, call `dtile.init()`.
 
 ## API: Properties
 
@@ -64,7 +63,8 @@ If you would like to cancel all animations--both loops and triggers--call `dtile
 Table for referencing messages posted to your script's `on_message()` function:
 
 ```
-dtile.msg = {
+dtile.msg =
+{
     animation_loop_complete = hash("animation_loop_complete"),
     animation_trigger_complete = hash("animation_trigger_complete")
 }
@@ -92,7 +92,8 @@ Initializes dtile. Must be called in order to begin animating tiles.
 The format for the `animation_groups` table is as follows:
 
 ```
-local animation_groups = {
+local animation_groups =
+{
     [<tile_id>] = { sequence = { <tile_id_1>, <tile_id_2>, ... }, trigger = <boolean>, frequency = <value>, reset = <boolean> },
     ...
 }
@@ -100,9 +101,15 @@ local animation_groups = {
 
 ---
 
+### dtile.final()
+
+Cancels all loop and trigger animations and disables all animation functions. This is useful when transitioning between tilemaps, among other cases.
+
+---
+
 ### dtile.animate(x, y, layer)
 
-Activates a trigger animation. If the specified tile has not been assigned a trigger animation, then this function does nothing.
+Activates a trigger animation. Does nothing if a trigger animation is not assigned to the specified tile.
 
 #### Parameters
 1. `x`: X-coordinate of tile.
@@ -110,6 +117,55 @@ Activates a trigger animation. If the specified tile has not been assigned a tri
 3. `layer`: Hashed tilemap layer id of tile.
 
 If you do not specify a `layer`, then dtile will activate all trigger animations at `[x, y]` regardless of layer.
+
+---
+
+### dtile.reset(x, y, layer)
+
+Resets a trigger animation to its first frame. Does nothing if a trigger animation is not assigned to the specified tile.
+
+#### Parameters
+1. `x`: X-coordinate of tile.
+2. `y`: Y-coordinate of tile.
+3. `layer`: Hashed tilemap layer id of tile.
+
+If you do not specify a `layer`, then dtile will reset all trigger animations at `[x, y]` regardless of layer.
+
+---
+
+### dtile.get_tile(x, y, layer)
+
+Gets a tile in the loaded tilemap.
+
+**Note:** This is a replacement for Defold's built-in [tilemap.get_tile()](https://defold.com/ref/tilemap/#tilemap.get_tile:url-layer-x-y). This function accounts for animations.
+
+#### Parameters
+1. `x`: X-coordinate of tile.
+2. `y`: Y-coordinate of tile.
+3. `layer`: Hashed tilemap layer id of tile.
+
+If you do not specify a `layer`, then dtile will return a table containing the tile at `[x, y]` in each layer:
+
+```
+{
+    [<layer>] = <tile_id>,
+    ...
+}
+```
+
+#### Returns
+
+Returns a tile id or a table of tile ids.
+
+Even if the tile is playing an animation, the first frame is returned. For example, a flower tile is animated across three frames and therefore three tile ids:
+
+```
+flower_sequence = [ tile_id = 1, tile_id = 2, tile_id = 3 ]
+current_tile_id = 2 // The flower animation is on its second frame.
+dtile.get_tile(<flower>) // Returns '1'.
+```
+
+To get the actual current tile id instead of the first frame, use [tilemap.get_tile()](https://defold.com/ref/tilemap/#tilemap.get_tile:url-layer-x-y).
 
 ---
 
@@ -125,6 +181,20 @@ See [tilemap.set_tile()](https://defold.com/ref/tilemap/#tilemap.set_tile:url-la
 
 ---
 
+### dtile.has_trigger_animation(tile_id)
+
+Checks if a trigger animation is assigned to the specified `tile_id`.
+
+#### Parameters
+
+1. `tile_id`: Tile id number.
+
+#### Returns
+
+Returns a `bool`.
+
+---
+
 ### dtile.toggle_message_passing(flag, url)
 
 Toggles dtile's ability to post animation update messages to your script's `on_message()` function.
@@ -132,9 +202,3 @@ Toggles dtile's ability to post animation update messages to your script's `on_m
 #### Parameters
 1. `flag`: Boolean indicating whether to post messages.
 2. `url`: URL to the script that should receive messages.
-
----
-
-### dtile.cleanup()
-
-Cancels all loop and trigger animations and disables all animation functions. This may be useful when transitioning between tilemaps, etc.
