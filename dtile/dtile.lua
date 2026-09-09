@@ -101,10 +101,10 @@ local function configure_animation_groups_instances()
 	for i = 1, #dtile.tilemap_layers do
 		dtile.tilemap_grid[dtile.tilemap_layers[i]] = {}
 		for j = dtile.tilemap_start_y, dtile.tilemap_end_y do
-			table.insert(dtile.tilemap_grid[dtile.tilemap_layers[i]], {})
+			dtile.tilemap_grid[dtile.tilemap_layers[i]][j] = {}
 			for k = dtile.tilemap_start_x, dtile.tilemap_end_x do
 				local tile_id = tilemap.get_tile(dtile.tilemap_url, dtile.tilemap_layers[i], k, j)
-				table.insert(dtile.tilemap_grid[dtile.tilemap_layers[i]][j], tile_id)
+				dtile.tilemap_grid[dtile.tilemap_layers[i]][j][k] = tile_id
 				if dtile.animation_groups[tile_id] then
 					if dtile.animation_groups[tile_id].trigger then
 						table.insert(dtile.animation_groups[tile_id].instances, { x = k, y = j, layer = dtile.tilemap_layers[i], frame = 1, handle = nil })
