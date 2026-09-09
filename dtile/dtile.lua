@@ -139,9 +139,10 @@ function dtile.init(animation_groups, tilemap_url, tilemap_layers)
 	dtile.tilemap_url = tilemap_url
 	dtile.tilemap_layers = tilemap_layers
 	local x, y, w, h = tilemap.get_bounds(tilemap_url)
-	-- Some tilemaps wrongly returns 1, 0 as bounds.
-	x = 1
-	y = 1
+	-- NOTE: previously x/y were hardcoded to 1 to work around a pre-1.13
+	-- tilemap.get_bounds quirk. Defold 1.13 returns correct bounds AND makes
+	-- tilemap.get_tile error on out-of-range, so the hardcode now queries off
+	-- the real tile range. Use the actual origin from get_bounds.
 	dtile.tilemap_start_x = x
 	dtile.tilemap_start_y = y
 	dtile.tilemap_end_x = x + w - 1
